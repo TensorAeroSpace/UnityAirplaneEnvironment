@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cc9714612770ee4fafd2c29c071dcd1, type: 3}
   m_Name: ml_agent
   m_EditorClassIdentifier: 
-  aircraftPosition: {x: 13, y: 5, z: 25}
-  cameraName: Ground Observer Camera
-  cameraPosition: {x: 10, y: 7, z: 30}
+  aircraftPosition: {x: 13, y: 100, z: 25}
+  cameraName: Third Person View Camera
+  cameraPosition: {x: 13, y: 100, z: 20}
   cameraEulerAngles: {x: 26, y: 0, z: 0}
   useMiniCams: 1
   jointState: 4
   DataManagerName: Aircraft Angles
-  aircraftVelocity: {x: 0, y: 0, z: 0}
+  aircraftVelocity: {x: 0, y: 10, z: -20}
   windSpeed: 0
   windAzimuth: 0
   windElevation: 0

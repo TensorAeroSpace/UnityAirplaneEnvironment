@@ -58,9 +58,9 @@ public class FlyingAgent : Agent
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActionsOut = actionsOut.ContinuousActions;
-        discreteActionsOut[0] = 1;
+        discreteActionsOut[0] = 0.4f;
         discreteActionsOut[1] = 0;
-        discreteActionsOut[2] = 0;
+        discreteActionsOut[2] = -0.3f;
         discreteActionsOut[3] = 0;
         discreteActionsOut[4] = 0;
         discreteActionsOut[5] = 0;
