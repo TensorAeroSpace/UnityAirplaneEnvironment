@@ -1,6 +1,6 @@
 # UnityAirplaneEnvironment
 
-![](../.github/img/logo-no-background.png)
+![](.github/img/logo-no-background.png)
 
 
 # About
