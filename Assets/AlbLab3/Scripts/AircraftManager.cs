@@ -108,12 +108,13 @@ public class AircraftManager : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate()
-    {
+    { /*
         if (usePilotControls)
         {
             GetControlInputs();
             ApplyControls();
         }
+        */
     }
 
     public void UpdateTransparency(float transparency)
@@ -130,7 +131,6 @@ public class AircraftManager : MonoBehaviour
         //thrust = Mathf.Clamp(maxThrust * Input.GetAxis("Thrust"), 0, maxThrust);
 
         // Get control flap inputs
-        if (!frozen) { 
         aileronDelta = Mathf.Clamp(-maxControlThrow * Input.GetAxis("Aileron") - aileronTrim, -maxControlThrow, maxControlThrow);
         elevatorDelta = Mathf.Clamp(-maxControlThrow * Input.GetAxis("Elevator") - elevatorTrim, -maxControlThrow, maxControlThrow);
         rudderDelta = Mathf.Clamp(-maxControlThrow * Input.GetAxis("Rudder") - rudderTrim, -maxControlThrow, maxControlThrow);
@@ -185,67 +185,67 @@ public class AircraftManager : MonoBehaviour
             elevatorDelta *= -1f;
         if (ReverseRudder)
             rudderDelta *= -1f;
-        }
     }
 
     public void SetControlInputs(float thrustAction, float aileronAction, float elevatorAction, float rudderAction, float elevatorTrimAction, float flapDownAction, float flapUpAction)
     {
-
-        thrust = Mathf.Clamp(maxThrust * thrustAction, 0, maxThrust);
-
-        /*
-        // Get control flap inputs
-        aileronDelta = Mathf.Clamp(-maxControlThrow * aileronAction - aileronTrim, -maxControlThrow, maxControlThrow);
-        elevatorDelta = Mathf.Clamp(-maxControlThrow * elevatorAction - elevatorTrim, -maxControlThrow, maxControlThrow);
-        rudderDelta = Mathf.Clamp(-maxControlThrow * rudderAction - rudderTrim, -maxControlThrow, maxControlThrow);
-
-        elevatorTrim = elevatorTrimAction * 10;
-
-        // Flap is more like a button
-        if (flapDownAction > 0.0f)
+        if (!frozen)
         {
-            if (ReverseFlap)
-            {
-                flapSetting = Flapsetting.up;
-            }
-            else
-            {
-                flapSetting = Flapsetting.down;
+            thrust = Mathf.Clamp(maxThrust * thrustAction, 0, maxThrust);
 
+
+            // Get control flap inputs
+            aileronDelta = Mathf.Clamp(-maxControlThrow * aileronAction - aileronTrim, -maxControlThrow, maxControlThrow);
+            elevatorDelta = Mathf.Clamp(-maxControlThrow * elevatorAction - elevatorTrim, -maxControlThrow, maxControlThrow);
+            rudderDelta = Mathf.Clamp(-maxControlThrow * rudderAction - rudderTrim, -maxControlThrow, maxControlThrow);
+
+            elevatorTrim = elevatorTrimAction * 10;
+
+            // Flap is more like a button
+            if (flapDownAction > 0.0f)
+            {
+                if (ReverseFlap)
+                {
+                    flapSetting = Flapsetting.up;
+                }
+                else
+                {
+                    flapSetting = Flapsetting.down;
+
+                }
             }
+            // No else here, could have both buttons pressed
+            if (flapUpAction > 0.0f)
+            {
+                if (ReverseFlap)
+                {
+                    flapSetting = Flapsetting.down;
+                }
+                else
+                {
+                    flapSetting = Flapsetting.up;
+
+                }
+            }
+
+            // Funky switch expression
+            flapTarget = flapSetting switch
+            {
+                Flapsetting.up => 0,
+                Flapsetting.down => flapDelta,
+                _ => 0,
+            };
+
+            // Polarity
+            if (ReverseThrottle)
+                thrust *= -1f;
+            if (ReverseAileron)
+                aileronDelta *= -1f;
+            if (ReverseEvelevator)
+                elevatorDelta *= -1f;
+            if (ReverseRudder)
+                rudderDelta *= -1f;
         }
-        // No else here, could have both buttons pressed
-        if (flapUpAction > 0.0f)
-        {
-            if (ReverseFlap)
-            {
-                flapSetting = Flapsetting.down;
-            }
-            else
-            {
-                flapSetting = Flapsetting.up;
-
-            }
-        }
-
-        // Funky switch expression
-        flapTarget = flapSetting switch
-        {
-            Flapsetting.up => 0,
-            Flapsetting.down => flapDelta,
-            _ => 0,
-        };
-
-        // Polarity
-        if (ReverseThrottle)
-            thrust *= -1f;
-        if (ReverseAileron)
-            aileronDelta *= -1f;
-        if (ReverseEvelevator)
-            elevatorDelta *= -1f;
-        if (ReverseRudder)
-            rudderDelta *= -1f;
-        */
         ApplyControls();
     }
 
