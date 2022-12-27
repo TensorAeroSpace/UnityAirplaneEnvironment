@@ -30,6 +30,7 @@ public class AircraftManager : MonoBehaviour
     public bool ReverseRudder;
     public bool ReverseFlap;
     public bool ReverseThrottle;
+    public bool frozen;
 
     [Header("Control Trim")]
     public float elevatorTrim;
@@ -72,6 +73,7 @@ public class AircraftManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        frozen = false;
         aircraftRigidBody.mass = mass;
         aircraftRigidBody.inertiaTensor = inertiaTensor;
         aircraftRigidBody.inertiaTensorRotation = Quaternion.identity;
@@ -106,12 +108,12 @@ public class AircraftManager : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate()
-    {/*
+    {
         if (usePilotControls)
         {
             GetControlInputs();
             ApplyControls();
-        }*/
+        }
     }
 
     public void UpdateTransparency(float transparency)
@@ -125,9 +127,10 @@ public class AircraftManager : MonoBehaviour
 
     void GetControlInputs()
     {
-        thrust = Mathf.Clamp(maxThrust * Input.GetAxis("Thrust"), 0, maxThrust);
+        //thrust = Mathf.Clamp(maxThrust * Input.GetAxis("Thrust"), 0, maxThrust);
 
         // Get control flap inputs
+        if (!frozen) { 
         aileronDelta = Mathf.Clamp(-maxControlThrow * Input.GetAxis("Aileron") - aileronTrim, -maxControlThrow, maxControlThrow);
         elevatorDelta = Mathf.Clamp(-maxControlThrow * Input.GetAxis("Elevator") - elevatorTrim, -maxControlThrow, maxControlThrow);
         rudderDelta = Mathf.Clamp(-maxControlThrow * Input.GetAxis("Rudder") - rudderTrim, -maxControlThrow, maxControlThrow);
@@ -182,6 +185,7 @@ public class AircraftManager : MonoBehaviour
             elevatorDelta *= -1f;
         if (ReverseRudder)
             rudderDelta *= -1f;
+        }
     }
 
     public void SetControlInputs(float thrustAction, float aileronAction, float elevatorAction, float rudderAction, float elevatorTrimAction, float flapDownAction, float flapUpAction)
@@ -189,6 +193,7 @@ public class AircraftManager : MonoBehaviour
 
         thrust = Mathf.Clamp(maxThrust * thrustAction, 0, maxThrust);
 
+        /*
         // Get control flap inputs
         aileronDelta = Mathf.Clamp(-maxControlThrow * aileronAction - aileronTrim, -maxControlThrow, maxControlThrow);
         elevatorDelta = Mathf.Clamp(-maxControlThrow * elevatorAction - elevatorTrim, -maxControlThrow, maxControlThrow);
@@ -240,7 +245,7 @@ public class AircraftManager : MonoBehaviour
             elevatorDelta *= -1f;
         if (ReverseRudder)
             rudderDelta *= -1f;
-
+        */
         ApplyControls();
     }
 
