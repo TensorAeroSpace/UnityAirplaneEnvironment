@@ -5,13 +5,13 @@ using UnityEngine;
 public class Birds : MonoBehaviour
 {
     public Rigidbody aircraftRigidBody;
-    public float previousTime, interval;
+    public float previousTime, interval, impact;
 
     void FixedUpdate()
     {
         if(Time.time > previousTime + interval)
         {
-            aircraftRigidBody.AddForce(new Vector3(0, -1000, 0));
+            aircraftRigidBody.AddForce(new Vector3(0, -1, 0) * impact);
             previousTime = Time.time;
         }
     }
