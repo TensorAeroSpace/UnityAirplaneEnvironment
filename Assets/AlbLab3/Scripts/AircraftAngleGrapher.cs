@@ -20,10 +20,6 @@ public class AircraftAngleGrapher : MonoBehaviour
         float pitch = Vector3.SignedAngle(Manager.aircraftRb.transform.forward, Vector3.up, Vector3.right) - 90f;
         float yaw = Vector3.SignedAngle(Manager.aircraftRb.transform.forward, Vector3.forward, Vector3.up) - 180f;
         float roll = Vector3.SignedAngle(Manager.aircraftRb.transform.right, Vector3.up, Vector3.forward);
-        Grapher.Log(pitch, "Angle of attack (deg)");
-        Grapher.Log(yaw, "Yaw (deg)");
-        Grapher.Log(roll, "Roll (deg)");
-
         //Vector3 aircraftForward = Manager.aircraftRb.transform.forward;
 
         //Quaternion q = Manager.aircraftRb.rotation;
