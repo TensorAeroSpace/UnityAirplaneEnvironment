@@ -8,16 +8,27 @@ public class FlyingAgent : Agent
 {
     public GameObject target;
     public GameObject airplane;
+    public AircraftManager manager;
     public MainMFD canvas;
+    public FlightDynamicsLabManager more_manager;
+    
+    public override void OnEpisodeBegin()
+    {
+        more_manager.DoExperimentSetup();
+        manager.ResetInitialize();
+        target.GetComponent<TargetCube>().ResetPos();
+    }
+    
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(airplane.transform.rotation.z);
         sensor.AddObservation(airplane.transform.rotation.y);
         sensor.AddObservation(airplane.transform.rotation.x);
         sensor.AddObservation(target.transform.position - airplane.transform.position);
-        sensor.AddObservation(target.transform.position.y);
-        sensor.AddObservation(canvas.flapsIndex);
-        sensor.AddObservation(canvas.currentFlap);
+        //sensor.AddObservation(target.transform.position.y);
+        sensor.AddObservation(0);
+        sensor.AddObservation(manager.flapAngle);
+        sensor.AddObservation(manager.flapTarget);
         sensor.AddObservation(canvas.gearDown);
 
         sensor.AddObservation(canvas.speed);
@@ -52,23 +63,45 @@ public class FlyingAgent : Agent
 
         gameObject.GetComponent<AircraftManager>().SetControlInputs(thrustAction, aileronAction,  elevatorAction, rudderAction,  elevatorTrimAction, flapDownAction, flapUpAction);
 
-        SetReward(-1f);
+        Vector3 my_dir = airplane.transform.forward;
+        Vector3 target_dir = target.transform.position - airplane.transform.position;
+        target_dir /= target_dir.magnitude;
+        float weight = 1f;
+        Vector3 project_dir = Vector3.Project(my_dir, target_dir);
+        if (Vector3.Angle(project_dir, target_dir) > 1f)
+        {
+            weight = -1f;
+        }
+        SetReward(Vector3.Project(my_dir, target_dir).magnitude * weight);
+        
+        //Debug.Log(Vector3.Project(my_dir, target_dir).magnitude * weight);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActionsOut = actionsOut.ContinuousActions;
-        discreteActionsOut[0] = 0.4f;
-        discreteActionsOut[1] = 0;
-        discreteActionsOut[2] = -0.3f;
-        discreteActionsOut[3] = 0;
-        discreteActionsOut[4] = 0;
-        discreteActionsOut[5] = 0;
-        discreteActionsOut[6] = 0;
+        ///*
+        discreteActionsOut[0] = Input.GetAxis("Thrust");
+        discreteActionsOut[1] = Input.GetAxis("Aileron");
+        discreteActionsOut[2] = Input.GetAxis("Elevator");
+        //Debug.Log(Input.GetAxis("Elevator"));
+        discreteActionsOut[3] = Input.GetAxis("Rudder");
+        discreteActionsOut[4] = Input.GetAxis("Elevator Trim");
+        discreteActionsOut[5] = Input.GetAxis("FlapDown");
+        discreteActionsOut[6] = Input.GetAxis("FlapUp");//*/
+        /*
+        discreteActionsOut[0] = 1f;
+        discreteActionsOut[1] = 0f;
+        discreteActionsOut[2] = -0.7f;
+        discreteActionsOut[3] = 0f;
+        discreteActionsOut[4] = 0f;
+        discreteActionsOut[5] = 1f;
+        discreteActionsOut[6] = 0f;*/
+        
     }
 
     public void Win()
     {
-        SetReward(100f);
+        SetReward(1000f);
     }
 }

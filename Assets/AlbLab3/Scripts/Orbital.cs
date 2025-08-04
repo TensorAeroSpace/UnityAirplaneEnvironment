@@ -17,6 +17,7 @@ public class Orbital : MonoBehaviour
     {
         direction = new Vector3(0, 0, (target.position - transform.position).magnitude);
         transform.SetParent(target);
+        transform.position = target.position - new Vector3(0, 0, 5);
         lastPosition = Input.mousePosition;
     }
 
