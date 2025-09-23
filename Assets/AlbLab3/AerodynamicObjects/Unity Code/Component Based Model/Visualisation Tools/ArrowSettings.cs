@@ -12,10 +12,13 @@ class ArrowSettings : ScriptableObject
     static ArrowSettings singleton;
     public static ArrowSettings Singleton()
     {
+#if UNITY_EDITOR
         if (singleton == null)
             GetSerializedSettings();
 
         return singleton;
+#endif
+        return null;
     }
 
     // New values
@@ -46,6 +49,7 @@ class ArrowSettings : ScriptableObject
 
     internal static ArrowSettings GetOrCreateSettings()
     {
+#if UNITY_EDITOR
         ArrowSettings settings = AssetDatabase.LoadAssetAtPath<ArrowSettings>(k_ArrowSettingsPath);
         if (settings == null)
         {
@@ -65,7 +69,6 @@ class ArrowSettings : ScriptableObject
             settings.windColour = new Color(0, 1, 1, settings.arrowAlpha);
             settings.alphaColour = new Color(1, 1, 0, settings.wedgeAlpha);
             settings.betaColour = new Color(1, 0, 1, settings.wedgeAlpha);
-
             AssetDatabase.CreateAsset(settings, k_ArrowSettingsPath);
             AssetDatabase.SaveAssets();
         }
@@ -73,19 +76,23 @@ class ArrowSettings : ScriptableObject
         ArrowSettings.singleton = settings;
 
         return settings;
+#endif
+        return null;
     }
 
 
-
+#if UNITY_EDITOR
     internal static SerializedObject GetSerializedSettings()
     {
         return new SerializedObject(GetOrCreateSettings());
     }
+#endif
 }
 
 // Register a SettingsProvider using IMGUI for the drawing framework:
 static class MyCustomSettingsIMGUIRegister
 {
+#if UNITY_EDITOR
     [SettingsProvider]
     public static SettingsProvider CreateMyCustomSettingsProvider()
     {
@@ -124,4 +131,5 @@ static class MyCustomSettingsIMGUIRegister
 
         return provider;
     }
+#endif
 }

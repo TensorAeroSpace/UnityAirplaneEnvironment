@@ -444,6 +444,13 @@ public class AeroBody : MonoBehaviour
     //    rb.inertiaTensor = 0.2f * rb.mass * new Vector3(aeroBody.thickness_b * aeroBody.thickness_b / 4f + aeroBody.chord_c * aeroBody.chord_c / 4f, aeroBody.span_a * aeroBody.span_a / 4f + aeroBody.chord_c * aeroBody.chord_c / 4f, aeroBody.span_a * aeroBody.span_a / 4f + aeroBody.thickness_b * aeroBody.thickness_b / 4f);
     //}
 
+    bool _justTeleported;
+
+    public void FlagTeleported()
+    {
+        _justTeleported = true;
+    }
+
     public void ResolveWind_3()
     {
         // Putting this here because it's definitely going to be called and it needs doing
@@ -453,8 +460,21 @@ public class AeroBody : MonoBehaviour
         // In aerodynamics, wind velocity describes the velocity of the body relative to the wind
 
         // Using the transform position here so we can have aero body components separate from rigid bodies
-        // and everything should still work
-        earthVelocity = rb.GetPointVelocity(transform.position);
+        // and everything should still work    
+        if (_justTeleported)
+        {
+            // на 1 тик гасим влияние «ложной скорости точки»
+            earthVelocity = Vector3.zero;
+            // обнуление rb.* лучше делать снаружи, но на всякий случай можно оставить:
+            // rb.velocity = Vector3.zero;
+            // rb.angularVelocity = Vector3.zero;
+
+            _justTeleported = false; // только на один FixedUpdate
+        }
+        else
+        {
+            earthVelocity = rb.GetPointVelocity(transform.position);
+        }
 
         // Start with earth frame
         earthFrame.SetResolvedWind(earthVelocity - externalFlowVelocity_inEarthFrame, rb.angularVelocity);

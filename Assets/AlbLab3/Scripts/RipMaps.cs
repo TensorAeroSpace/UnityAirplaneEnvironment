@@ -33,22 +33,30 @@ public class RipMaps : MonoBehaviour
                     MeshFilter cloneFilter = clonePanel.AddComponent<MeshFilter>();
                     MeshRenderer cloneRenderer = clonePanel.AddComponent<MeshRenderer>();
                     cloneFilter.sharedMesh = meshFilter.sharedMesh;
+#if UNITY_EDITOR
                     AssetDatabase.CreateAsset(cloneFilter.sharedMesh, "Assets/Ripped Map/" + "mesh" + i.ToString() + ".mesh");
+#endif
 
                     // Copy the texture
                     Texture2D texture = Instantiate(GetTexture(meshRenderer));
                     // Encode texture into PNG
                     byte[] bytes = ImageConversion.EncodeToPNG(texture);
                     File.WriteAllBytes("Assets/Ripped Map/" + "tex" + i.ToString() + ".png", bytes);
+#if UNITY_EDITOR
                     AssetDatabase.Refresh();
+#endif
 
                     // Copy the material
                     Material cloneMaterial = new Material(Shader.Find("Standard"));
                     cloneMaterial.CopyPropertiesFromMaterial(meshRenderer.sharedMaterial);
 
+#if UNITY_EDITOR
                     cloneMaterial.SetTexture("_MainTex", (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Ripped Map/" + "tex" + i.ToString() + ".png", typeof(Texture2D)));
+#endif
                     cloneRenderer.material = cloneMaterial;
+#if UNITY_EDITOR
                     AssetDatabase.CreateAsset(cloneMaterial, "Assets/Ripped Map/" + "mat" + i.ToString() + ".mat");
+#endif
 
                     clonePanel.transform.SetParent(rootObject.transform, true);
                 }
