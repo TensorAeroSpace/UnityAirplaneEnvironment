@@ -9,6 +9,12 @@ public class Thruster : MonoBehaviour
     public Transform propellerHub;
     public float spinScale = 1;
     
+    void Start()
+    {
+    	//Debug.Log("Start22");
+    	//Debug.Log(propellerHub.position);
+    }
+    
     void FixedUpdate()
     {
     }
@@ -16,7 +22,11 @@ public class Thruster : MonoBehaviour
     public void ApplyThrust(float thrust)
     {
         Vector3 thrustVector = new Vector3(0, 0, thrust);
+        //Debug.Log("===============================");
+        //Debug.Log(thrust);
+        //Debug.Log(propellerHub.TransformDirection(thrustVector));
+        //Debug.Log(propellerHub.position);
         rb.AddForceAtPosition(propellerHub.TransformDirection(thrustVector), propellerHub.position);
-        propellerHub.Rotate(0, 0, -spinScale * thrust * Time.deltaTime);
+        //propellerHub.Rotate(0, 0, -spinScale * thrust * Time.deltaTime);
     }
 }

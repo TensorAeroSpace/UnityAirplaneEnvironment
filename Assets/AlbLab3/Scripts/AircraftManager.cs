@@ -20,6 +20,7 @@ public class AircraftManager : MonoBehaviour
 
     [Header("Aircraft inertial properties")]
     public Rigidbody aircraftRigidBody;
+    public AeroGroup ag;
     public float mass = 7f;
     private readonly Vector3 inertiaTensor = new Vector3(0.37f, 1.546f, 1.12f);
 
@@ -73,13 +74,19 @@ public class AircraftManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+    	//Debug.Log("Start!11");
+    	//Debug.Log(aircraftRigidBody.transform.position);
         ResetInitialize();
     }
     
     public void ResetInitialize()
     {
+        var oldInterp = aircraftRigidBody.interpolation;
+        aircraftRigidBody.interpolation = RigidbodyInterpolation.None;
+        aircraftRigidBody.velocity = Vector3.zero;
+        aircraftRigidBody.angularVelocity = Vector3.zero;
+    	//Debug.Log("==================Updated!===================");
         aircraftRigidBody.GetComponent<Rigidbody>().velocity = new Vector3(0f, 10f, -20f);
-        //Debug.Log(aircraftRigidBody.GetComponent<Rigidbody>().velocity);
         aircraftRigidBody.transform.SetPositionAndRotation(new Vector3(13f, 10019.39000034f, 19.0300007f), Quaternion.Euler(0f, 180f, 0f));
         //gameObject.transform.rotation.eulerAngles = new Vector3(0f, 180f, 0f);
         //gameObject.transform.position = new Vector3(13f, 9.39000034f, 19.0300007f);
@@ -114,6 +121,14 @@ public class AircraftManager : MonoBehaviour
             else particleSystems.SetActive(false);
         }
 
+        for (int i = 0; i < ag.aeroBodies.Length; i++)
+        {
+            ag.aeroBodies[i].FlagTeleported();
+
+            ag.aeroBodies[i].GetReferenceFrames_1();
+            ag.aeroBodies[i].GetEllipsoid_1_to_2();
+        }
+        aircraftRigidBody.interpolation = oldInterp;
     }
 
     // Update is called once per frame
@@ -260,8 +275,11 @@ public class AircraftManager : MonoBehaviour
 
     void ApplyControls()
     {
-        // Apply thrust input        
-        thruster.ApplyThrust(thrust);
+        // Apply thrust input 
+        //Debug.Log("Tak");
+        //Debug.Log(aircraftRigidBody.transform.position);       
+        //thruster.ApplyThrust(thrust);
+        //Debug.Log(aircraftRigidBody.transform.position);   
 
         // Apply control surface inputs
         SetControlSurface(portAileron, portWingOuter, portAileronTrim, aileronDelta);
