@@ -1,0 +1,1 @@
+alpha	Cl for flap at 0.00	Cd for flap at 0.00	Cl for flap at 20.00	Cd for flap at 20.00	Cl for flap at 40.00	Cd for flap at 40.00	Cm for elevator at 0.00	Cm for elevator at 20.00	Cm for elevator at 40.00	Cm for CG at -0.0500	Cm for CG at -0.1000	Cm for CG at 0.0000	Cm for CG at 0.1000	

@@ -17,6 +17,6 @@ public class ChaseCamera : MonoBehaviour
     {
         //transform.position = Vector3.MoveTowards(  target.position, target.TransformVector( -offset), 1);
         transform.position = target.position - offset;
-        transform.rotation = Quaternion.LookRotation(target.position - transform.position);
+        transform.rotation = target.rotation;
     }
 }

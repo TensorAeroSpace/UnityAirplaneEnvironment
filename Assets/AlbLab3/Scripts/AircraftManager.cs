@@ -20,6 +20,7 @@ public class AircraftManager : MonoBehaviour
 
     [Header("Aircraft inertial properties")]
     public Rigidbody aircraftRigidBody;
+    public AeroGroup ag;
     public float mass = 7f;
     private readonly Vector3 inertiaTensor = new Vector3(0.37f, 1.546f, 1.12f);
 
@@ -64,15 +65,31 @@ public class AircraftManager : MonoBehaviour
     public freeWheels wheels;
 
     public Thruster thruster;
-    enum Flapsetting { up, down };
-    Flapsetting flapSetting = Flapsetting.up;
-    float flapAngle = 0;
-    float flapVelocity, flapTarget;
+    public enum Flapsetting { up, down };
+    public Flapsetting flapSetting = Flapsetting.up;
+    public float flapAngle = 0;
+    public float flapVelocity, flapTarget;
     
 
     // Start is called before the first frame update
     void Start()
     {
+    	//Debug.Log("Start!11");
+    	//Debug.Log(aircraftRigidBody.transform.position);
+        ResetInitialize();
+    }
+    
+    public void ResetInitialize()
+    {
+        var oldInterp = aircraftRigidBody.interpolation;
+        aircraftRigidBody.interpolation = RigidbodyInterpolation.None;
+        aircraftRigidBody.velocity = Vector3.zero;
+        aircraftRigidBody.angularVelocity = Vector3.zero;
+    	//Debug.Log("==================Updated!===================");
+        aircraftRigidBody.GetComponent<Rigidbody>().velocity = new Vector3(0f, 10f, -20f);
+        aircraftRigidBody.transform.SetPositionAndRotation(new Vector3(13f, 10019.39000034f, 19.0300007f), Quaternion.Euler(0f, 180f, 0f));
+        //gameObject.transform.rotation.eulerAngles = new Vector3(0f, 180f, 0f);
+        //gameObject.transform.position = new Vector3(13f, 9.39000034f, 19.0300007f);
         frozen = false;
         aircraftRigidBody.mass = mass;
         aircraftRigidBody.inertiaTensor = inertiaTensor;
@@ -104,17 +121,25 @@ public class AircraftManager : MonoBehaviour
             else particleSystems.SetActive(false);
         }
 
+        for (int i = 0; i < ag.aeroBodies.Length; i++)
+        {
+            ag.aeroBodies[i].FlagTeleported();
+
+            ag.aeroBodies[i].GetReferenceFrames_1();
+            ag.aeroBodies[i].GetEllipsoid_1_to_2();
+        }
+        aircraftRigidBody.interpolation = oldInterp;
     }
 
     // Update is called once per frame
     void FixedUpdate()
-    { /*
+    { 
         if (usePilotControls)
         {
             GetControlInputs();
             ApplyControls();
         }
-        */
+        
     }
 
     public void UpdateTransparency(float transparency)
@@ -128,7 +153,7 @@ public class AircraftManager : MonoBehaviour
 
     void GetControlInputs()
     {
-        //thrust = Mathf.Clamp(maxThrust * Input.GetAxis("Thrust"), 0, maxThrust);
+        thrust = Mathf.Clamp(maxThrust * Input.GetAxis("Thrust"), 0, maxThrust);
 
         // Get control flap inputs
         aileronDelta = Mathf.Clamp(-maxControlThrow * Input.GetAxis("Aileron") - aileronTrim, -maxControlThrow, maxControlThrow);
@@ -193,7 +218,6 @@ public class AircraftManager : MonoBehaviour
         {
             thrust = Mathf.Clamp(maxThrust * thrustAction, 0, maxThrust);
 
-
             // Get control flap inputs
             aileronDelta = Mathf.Clamp(-maxControlThrow * aileronAction - aileronTrim, -maxControlThrow, maxControlThrow);
             elevatorDelta = Mathf.Clamp(-maxControlThrow * elevatorAction - elevatorTrim, -maxControlThrow, maxControlThrow);
@@ -251,8 +275,11 @@ public class AircraftManager : MonoBehaviour
 
     void ApplyControls()
     {
-        // Apply thrust input        
-        thruster.ApplyThrust(thrust);
+        // Apply thrust input 
+        //Debug.Log("Tak");
+        //Debug.Log(aircraftRigidBody.transform.position);       
+        //thruster.ApplyThrust(thrust);
+        //Debug.Log(aircraftRigidBody.transform.position);   
 
         // Apply control surface inputs
         SetControlSurface(portAileron, portWingOuter, portAileronTrim, aileronDelta);
@@ -267,6 +294,7 @@ public class AircraftManager : MonoBehaviour
         flapAngle = Mathf.SmoothDamp(flapAngle, flapTarget, ref flapVelocity, flapDeployTime);
         SetControlSurface(portFlap, portWingInner, portFlapTrim, flapAngle);
         SetControlSurface(starboardFlap, starboardWingInner, starboardFlapTrim, flapAngle);
+
     }
 
     public void SetControlSurface(Transform hinge, AeroBody aeroBody, Quaternion trim, float delta)
