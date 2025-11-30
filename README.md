@@ -106,7 +106,7 @@ cd UnityAirplaneEnvironment
 
 ```bash
 # Установка Python-пакета для обучения
-pip install mlagents==1.0.0
+pip install mlagents==1.1.0
 ```
 
 ---
@@ -116,7 +116,7 @@ pip install mlagents==1.0.0
 ### 1. Откройте сцену
 
 ```
-Assets/AlbLab3/Scenes/LlanbedrSinglePlane.unity
+Assets/AlbLab3/Scenes/MLAgentsScenes/MLAgentsScene.unity
 ```
 
 ### 2. Запустите в режиме Play
@@ -150,7 +150,6 @@ UnityAirplaneEnvironment/
 │   │   └── Scenes/                  # Unity-сцены
 │   │
 │   ├── FlyingAgent.cs              # 🤖 Основной RL-агент
-│   ├── PlaneAgent.cs               # 🤖 Упрощённый агент
 │   ├── TargetCube.cs               # 🎯 Целевая точка
 │   │
 │   ├── RainMaker/                  # 🌧️ Система погоды
@@ -172,27 +171,31 @@ UnityAirplaneEnvironment/
 
 ```yaml
 behaviors:
-  FlyingAgent:
-    trainer_type: ppo
+  Plane:
+    trainer_type: sac
     hyperparameters:
-      batch_size: 1024
-      buffer_size: 10240
+      buffer_size: 200000
+      buffer_init_steps: 10000
+      batch_size: 256
       learning_rate: 3.0e-4
-      beta: 5.0e-3
-      epsilon: 0.2
-      lambd: 0.95
-      num_epoch: 3
+      learning_rate_schedule: constant
+      steps_per_update: 1.0
+      tau: 0.005
+      init_entcoef: 0.2
+      save_replay_buffer: false
     network_settings:
       normalize: true
       hidden_units: 256
-      num_layers: 3
+      num_layers: 2
+      vis_encode_type: simple
     reward_signals:
       extrinsic:
         gamma: 0.99
         strength: 1.0
-    max_steps: 5000000
-    time_horizon: 64
-    summary_freq: 10000
+    max_steps: 4000000
+    time_horizon: 128
+    summary_freq: 30000
+    keep_checkpoints: 5
 ```
 
 ### Запуск обучения
@@ -214,25 +217,6 @@ tensorboard --logdir=results
 | Таймаут | -0 до -5 | Штраф пропорционален расстоянию |
 | Критический угол | -20.0 | |pitch| > 40° или |roll| > 70° |
 | Каждый шаг | -0.0005 | Стимул к быстрому решению |
-
----
-
-## 📊 Предобученные модели
-
-В репозитории доступны готовые `.onnx` модели:
-
-| Модель | Шаги обучения | Описание |
-|--------|---------------|----------|
-| `Plane.onnx` | Базовая | Начальная модель |
-| `Plane-1999944.onnx` | ~2M | Промежуточная |
-| `Plane-2499960.onnx` | ~2.5M | Улучшенная версия |
-
-### Использование модели
-
-1. Выберите объект `FlyingAgent` в сцене
-2. В компоненте **Behavior Parameters**:
-   - Установите **Behavior Type** → `Inference Only`
-   - Перетащите `.onnx` файл в поле **Model**
 
 ---
 
