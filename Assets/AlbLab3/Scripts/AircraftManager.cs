@@ -86,8 +86,10 @@ public class AircraftManager : MonoBehaviour
         aircraftRigidBody.velocity = Vector3.zero;
         aircraftRigidBody.angularVelocity = Vector3.zero;
     	//Debug.Log("==================Updated!===================");
-        aircraftRigidBody.GetComponent<Rigidbody>().velocity = new Vector3(0f, 10f, -20f);
         aircraftRigidBody.transform.SetPositionAndRotation(new Vector3(13f, 10019.39000034f, 19.0300007f), Quaternion.Euler(0f, 180f, 0f));
+        aircraftRigidBody.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, -20f);
+        aircraftRigidBody.GetComponent<Rigidbody>().angularVelocity = new Vector3(0f, 0f, 0f);
+        //aircraftRigidBody.GetComponent<Rigidbody>().velocity = new Vector3(0f, 10f, -20f);
         //gameObject.transform.rotation.eulerAngles = new Vector3(0f, 180f, 0f);
         //gameObject.transform.position = new Vector3(13f, 9.39000034f, 19.0300007f);
         frozen = false;

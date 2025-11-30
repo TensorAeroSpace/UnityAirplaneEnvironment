@@ -13,7 +13,7 @@ public class TargetCube : MonoBehaviour
         Vector3 forw_vec = plane2.gameObject.transform.forward;
         forw_vec.y = 0f;
         forw_vec /= forw_vec.magnitude;
-        Vector3 newPos = plane2.gameObject.transform.position + forw_vec * 150 + UnityEngine.Random.onUnitSphere * 30;
+        Vector3 newPos = plane2.gameObject.transform.position + forw_vec * 50 + UnityEngine.Random.onUnitSphere * 10;
         //newPos.y = Mathf.Clamp(newPos.y, 20, 300);
         gameObject.transform.position = newPos;
         //gameObject.transform.position = plane.gameObject.transform.position + plane.gameObject.transform.forward * 10;
@@ -26,8 +26,9 @@ public class TargetCube : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Win!");
         plane.Win();
-        ResetPos();
+        //ResetPos();
     }
 
     // Update is called once per frame
